@@ -1,15 +1,17 @@
-
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
 <h2>Patient Dashboard</h2>
 <div class="row mt-4">
-    <div class="col-md-4 mb-3">
+    <div class="col-md-3 mb-3">
         <a href="{% url 'appointments:appointment_list' %}" class="btn btn-primary w-100">My Appointments</a>
     </div>
-    <div class="col-md-4 mb-3">
+    <div class="col-md-3 mb-3">
         <a href="{% url 'billing:bill_list' %}" class="btn btn-primary w-100">My Bills</a>
     </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'appointments:request_appointment' %}" class="btn btn-success w-100">Request Appointment</a>
+    </div>
 </div>
-<p class="mt-3">Patients can view their own appointments and bills.</p>
+<p class="mt-3">Patients can view their own appointments and bills, or request a new appointment.</p>
 {% endblock %}

@@ -1,0 +1,7 @@
+<!-- templates/appointments/request_appointment.html -->
+<h2>Request an Appointment</h2>
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Send Request</button>
+</form>

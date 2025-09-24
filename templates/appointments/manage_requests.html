@@ -1,0 +1,29 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Reason</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for req in requests %}
+        <tr>
+            <td>{{ req.patient.name }}</td>
+            <td>{{ req.doctor.name }}</td>
+            <td>{{ req.date }}</td>
+            <td>{{ req.time }}</td>
+            <td>{{ req.reason }}</td>
+            <td>
+                <a href="{% url 'appointments:approve_request' req.pk %}" class="btn btn-success btn-sm">Approve</a>
+                <a href="{% url 'appointments:reject_request' req.pk %}" class="btn btn-danger btn-sm">Reject</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No pending requests.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
