@@ -16,7 +16,7 @@
             <th>Doctor</th>
             <th>Status</th>
             <th>Request Status</th>
-            {% if user.role in 'admin receptionist' %}
+            {% if user.role == 'admin' or user.role == 'receptionist' or user.role == 'doctor' %}
             <th>Actions</th>
             {% endif %}
         </tr>
@@ -38,10 +38,14 @@
                     <span class="badge bg-danger">{{ appointment.request_status }}</span>
                 {% endif %}
             </td>
-            {% if user.role in 'admin receptionist' %}
+            {% if user.role == 'admin' or user.role == 'receptionist' %}
             <td>
                 <a href="{% url 'appointments:edit_appointment' appointment.pk %}" class="btn btn-sm btn-warning">Edit</a>
                 <a href="{% url 'appointments:delete_appointment' appointment.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+            {% elif user.role == 'doctor' %}
+            <td>
+                <a href="{% url 'appointments:edit_appointment' appointment.pk %}" class="btn btn-sm btn-warning">Edit</a>
             </td>
             {% endif %}
         </tr>

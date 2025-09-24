@@ -2,12 +2,29 @@
 {% load static %}
 {% block content %}
 <h2>Doctor Dashboard</h2>
+
+<!-- Show logged-in user details -->
+<div class="alert alert-info">
+    <strong>Logged in as:</strong>
+    {% if user.username %}
+    {{ user.username }}
+    {% elif user.email %}
+    {{ user.email }}
+    {% else %}
+    {{ user.get_full_name|default:user.id }}
+    {% endif %}
+    ({{ user.role|title }})
+</div>
+
 <div class="row mt-4">
     <div class="col-md-4 mb-3">
         <a href="{% url 'appointments:appointment_list' %}" class="btn btn-primary w-100">My Appointments</a>
     </div>
     <div class="col-md-4 mb-3">
         <a href="{% url 'appointments:manage_requests' %}" class="btn btn-danger w-100">Manage Requests</a>
+    </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'appointments:appointment_list' %}" class="btn btn-info w-100">Manage Appointments</a>
     </div>
 </div>
 <p class="mt-3">Doctors can view their appointments and approve or reject appointment requests.</p>

@@ -2,6 +2,20 @@
 {% load static %}
 {% block content %}
 <h2>Receptionist Dashboard</h2>
+
+<!-- Show logged-in user details -->
+<div class="alert alert-info">
+    <strong>Logged in as:</strong>
+    {% if user.username %}
+    {{ user.username }}
+    {% elif user.email %}
+    {{ user.email }}
+    {% else %}
+    {{ user.get_full_name|default:user.id }}
+    {% endif %}
+    ({{ user.role|title }})
+</div>
+
 <div class="row mt-4">
     <div class="col-md-3 mb-3">
         <a href="{% url 'patients:patient_list' %}" class="btn btn-info w-100">Manage Patients</a>
