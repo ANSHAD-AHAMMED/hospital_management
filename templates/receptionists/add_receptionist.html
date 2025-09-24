@@ -1,0 +1,11 @@
+<!-- receptionists/templates/receptionists/add_receptionist.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Add Receptionist</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Receptionist</button>
+</form>
+{% endblock %}

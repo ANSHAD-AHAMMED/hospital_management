@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center vh-100 d-flex align-items-center">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Login</h3>
+
+                {% if messages %}
+                    {% for msg in messages %}
+                        <div class="alert alert-{{ msg.tags }}">
+                            {{ msg }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Role Selection -->
+                    <div class="mb-3 text-center">
+                        <label class="form-label">Select Role</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="role" id="admin" value="admin" required>
+                            <label class="btn btn-outline-dark" for="admin">Admin</label>
+
+                            <input type="radio" class="btn-check" name="role" id="doctor" value="doctor">
+                            <label class="btn btn-outline-primary" for="doctor">Doctor</label>
+
+                            <input type="radio" class="btn-check" name="role" id="receptionist" value="receptionist">
+                            <label class="btn btn-outline-success" for="receptionist">Receptionist</label>
+
+                            <input type="radio" class="btn-check" name="role" id="patient" value="patient">
+                            <label class="btn btn-outline-warning" for="patient">Patient</label>
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+
+                    <!-- Login button -->
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+
+                    <!-- Signup link -->
+                    <p class="text-center mt-2">
+                        Don't have an account?
+                        <a href="{% url 'signup' %}">Register here</a>
+                    </p>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

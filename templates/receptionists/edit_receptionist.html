@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Edit Receptionist: {{ receptionist.name }}</h2>
+
+<form method="POST" class="mt-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Update Receptionist</button>
+    <a href="{% url 'receptionists:receptionist_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

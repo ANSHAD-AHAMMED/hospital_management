@@ -1,0 +1,42 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Billing</h2>
+
+{% if user.role in 'admin receptionist' %}
+<a href="{% url 'billing:add_bill' %}" class="btn btn-primary mb-3">Add Bill</a>
+{% endif %}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Appointment</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bill in bills %}
+        <tr>
+            <td>{{ bill.patient.name }}</td>
+            <td>{{ bill.appointment.date }} - {{ bill.appointment.time }}</td>
+            <td>{{ bill.amount }}</td>
+            <td>{{ bill.status }}</td>
+            <td>
+                {% if user.role in 'admin receptionist' %}
+                <a href="{% url 'billing:edit_bill' bill.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'billing:delete_bill' bill.id %}" class="btn btn-sm btn-danger">Delete</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No bills found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

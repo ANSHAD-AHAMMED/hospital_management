@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Reports Dashboard</h2>
+
+{% if user.role == 'admin' %}
+<div class="row mt-4">
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'reports:patients_report' %}" class="btn btn-info w-100">Patients Report</a>
+    </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'reports:doctors_report' %}" class="btn btn-info w-100">Doctors Report</a>
+    </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'reports:appointments_report' %}" class="btn btn-info w-100">Appointments Report</a>
+    </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'reports:billing_report' %}" class="btn btn-info w-100">Billing Report</a>
+    </div>
+</div>
+
+<p class="mt-3">Click any button to view detailed reports.</p>
+
+{% else %}
+<p class="text-danger">You do not have permission to view reports.</p>
+{% endif %}
+{% endblock %}

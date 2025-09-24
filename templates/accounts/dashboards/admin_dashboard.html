@@ -1,0 +1,30 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+<div class="row mt-4">
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'patients:patient_list' %}" class="btn btn-info w-100">Manage Patients</a>
+    </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'doctors:doctor_list' %}" class="btn btn-info w-100">Manage Doctors</a>
+    </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'appointments:appointment_list' %}" class="btn btn-info w-100">Manage Appointments</a>
+    </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'billing:bill_list' %}" class="btn btn-info w-100">Manage Billing</a>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'receptionists:receptionist_list' %}" class="btn btn-warning w-100">Manage Receptionists</a>
+    </div>
+    <div class="col-md-3">
+        <a href="{% url 'reports:reports_dashboard' %}" class="btn btn-success w-100">View Reports</a>
+    </div>
+</div>
+
+{% endblock %}

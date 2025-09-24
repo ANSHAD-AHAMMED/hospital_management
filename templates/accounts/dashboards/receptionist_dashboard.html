@@ -1,0 +1,18 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Receptionist Dashboard</h2>
+<div class="row mt-4">
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'patients:patient_list' %}" class="btn btn-info w-100">Manage Patients</a>
+    </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'appointments:appointment_list' %}" class="btn btn-info w-100">Manage Appointments</a>
+    </div>
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'billing:bill_list' %}" class="btn btn-info w-100">Manage Billing</a>
+    </div>
+</div>
+<p class="mt-3">Receptionists can manage patients, appointments, and billing but cannot add doctors or generate reports.</p>
+{% endblock %}
