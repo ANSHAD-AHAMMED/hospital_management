@@ -16,6 +16,15 @@
     ({{ user.role|title }})
 </div>
 
+{% if user.role == 'admin' or user.role == 'receptionist' %}
+<div class="row mt-3">
+    <div class="col-md-3 mb-3">
+        <a href="{% url 'patients:banner_list' %}" class="btn btn-primary w-100">
+            Manage Banners
+        </a>
+    </div>
+</div>
+{% endif %}
 
 <div class="row mt-4">
     <div class="col-md-3 mb-3">

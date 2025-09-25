@@ -38,10 +38,15 @@ def edit_receptionist(request, pk):
 
 
 def delete_receptionist(request, pk):
-    receptionist = get_object_or_404(Receptionist, pk=pk)
+    try:
+        receptionist = Receptionist.objects.get(pk=pk)
+    except Receptionist.DoesNotExist:
+        messages.error(request, "Receptionist not found.")
+        return redirect('receptionists:receptionist_list')
+
     if request.method == 'POST':
-        # Delete the related user too
         user = receptionist.user
         receptionist.delete()
         user.delete()
-        return redirect('receptionists:list_receptionists')
+        messages.success(request, "Receptionist deleted successfully!")
+        return redirect('receptionists:receptionist_list')

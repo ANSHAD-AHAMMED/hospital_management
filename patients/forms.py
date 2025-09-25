@@ -21,20 +21,27 @@ class PatientCreationForm(forms.ModelForm):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
 
-        user = CustomUser.objects.create_user(
+        # Create or get user
+        user, created = CustomUser.objects.get_or_create(
             username=username,
-            password=password,
-            role='patient'
+            defaults={'role': 'patient'}
         )
-        patient = Patient.objects.create(
-            user=user,
-            age=self.cleaned_data['age'],
-            gender=self.cleaned_data['gender'],
-            address=self.cleaned_data['address'],
-            phone=self.cleaned_data['phone']
-        )
-        return patient
+        if created:
+            user.set_password(password)
+            user.save()
 
+        # Create or update patient
+        patient, created_patient = Patient.objects.get_or_create(user=user)
+
+        # Always update details
+        patient.age = self.cleaned_data['age']
+        patient.gender = self.cleaned_data['gender']
+        patient.address = self.cleaned_data['address']
+        patient.phone = self.cleaned_data['phone']
+        if commit:
+            patient.save()
+
+        return patient
 
 
 class PatientForm(forms.ModelForm):

@@ -27,3 +27,11 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.name
+#patients\models.py
+class Banner(models.Model):
+    title = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='banners/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

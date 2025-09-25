@@ -14,7 +14,7 @@
         {% for doctor in doctors %}
         <tr>
             <td>{{ doctor.id }}</td>
-            <td>{{ doctor.name }}</td>
+            <td>{{ doctor.user.username }}</td>
             <td>{{ doctor.specialization }}</td>
             <td>{{ doctor.contact }}</td>
         </tr>

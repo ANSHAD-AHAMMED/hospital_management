@@ -16,6 +16,39 @@
     ({{ user.role|title }})
 </div>
 
+<!-- Hero / Banner for Patient Dashboard -->
+<section class="hero">
+  {% if banners %}
+  <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      {% for banner in banners %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <img src="{{ banner.image.url }}" class="d-block w-100" alt="{{ banner.title|default:'Hospital Banner' }}" style="max-height:300px; object-fit:cover;">
+        {% if banner.title %}
+        <div class="carousel-caption d-none d-md-block">
+          <h5>{{ banner.title }}</h5>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  {% else %}
+    <p>No banners found.</p>
+  {% endif %}
+</section>
+
+
+
+
 <div class="row mt-4">
     <div class="col-md-3 mb-3">
         <a href="{% url 'appointments:appointment_list' %}" class="btn btn-primary w-100">My Appointments</a>

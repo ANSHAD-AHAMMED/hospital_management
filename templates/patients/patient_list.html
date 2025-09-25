@@ -23,7 +23,7 @@
         <td>{{ patient.name }}</td>
         <td>{{ patient.age }}</td>
         <td>{{ patient.gender }}</td>
-        <td>{{ patient.contact }}</td>
+        <td>{{ patient.phone }}</td>
         <td>
             {% if user.role == 'admin' or user.role == 'receptionist' %}
             <a href="{% url 'patients:edit_patient' patient.id %}" class="btn btn-sm btn-warning">Edit</a>

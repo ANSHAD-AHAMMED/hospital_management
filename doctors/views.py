@@ -1,9 +1,8 @@
-# doctors/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Doctor
-from .forms import DoctorCreateForm   # <-- use this instead of DoctorForm
+from .forms import DoctorCreateForm
 from accounts.views import is_admin
 
 @login_required
@@ -18,8 +17,8 @@ def add_doctor(request):
     if request.method == 'POST':
         form = DoctorCreateForm(request.POST)
         if form.is_valid():
-            form.save()   # this will create CustomUser + Doctor
-            messages.success(request, "Doctor created successfully! They can now log in.")
+            form.save()
+            messages.success(request, "Doctor created successfully!")
             return redirect('doctors:doctor_list')
     else:
         form = DoctorCreateForm()
@@ -43,7 +42,7 @@ def edit_doctor(request, pk):
 @user_passes_test(is_admin)
 def delete_doctor(request, pk):
     doctor = get_object_or_404(Doctor, pk=pk)
-    doctor.user.delete()  # also delete linked CustomUser
+    doctor.user.delete()  # Delete CustomUser first
     doctor.delete()
     messages.success(request, "Doctor deleted successfully!")
     return redirect('doctors:doctor_list')

@@ -1,9 +1,10 @@
+#accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import get_user_model  # <-- add this
-from patients.models import Patient
+from patients.models import Patient, Banner
 from doctors.models import Doctor
 from appointments.models import Appointment
 from billing.models import Bill
@@ -131,7 +132,8 @@ def doctor_dashboard(request):
 @login_required
 @user_passes_test(is_patient)
 def patient_dashboard(request):
-    return render(request, 'accounts/dashboards/patient_dashboard.html')
+    banners = Banner.objects.all().order_by('-created_at')  # Fetch banners
+    return render(request, 'accounts/dashboards/patient_dashboard.html', {'banners': banners})
 
 @login_required
 @user_passes_test(is_receptionist)
