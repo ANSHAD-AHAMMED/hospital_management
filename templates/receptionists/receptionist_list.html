@@ -1,42 +1,69 @@
-{% extends 'base.html' %}
+{% extends 'admin_list_base.html' %}
 {% load static %}
 
-{% block content %}
-<h2>Receptionists</h2>
-<div class="mb-3">
-    <a href="{% url 'receptionists:add_receptionist' %}" class="btn btn-success">Add New Receptionist</a>
-</div>
+{% block title %}Receptionists - Hospital Management System{% endblock %}
+{% block page_title %}Receptionists{% endblock %}
+{% block current_page %}Receptionists{% endblock %}
 
-<table class="table table-bordered">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>Contact</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for receptionist in receptionists %}
-    <tr>
-        <td>{{ receptionist.id }}</td>
-        <td>{{ receptionist.user.username }}</td>
-        <td>{{ receptionist.contact }}</td>
-        <td>
-            <a href="{% url 'receptionists:edit_receptionist' receptionist.id %}" class="btn btn-sm btn-warning">Edit</a>
+{% block add_url %}{% url 'receptionists:add_receptionist' %}{% endblock %}
+{% block add_text %}Add Receptionist{% endblock %}
 
-            <!-- Delete Button -->
-            <form action="{% url 'receptionists:delete_receptionist' receptionist.id %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this receptionist?');">Delete</button>
-            </form>
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="4" class="text-center">No receptionists found.</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+{% block list_title %}Receptionists{% endblock %}
+{% block list_subtitle %}Manage receptionist accounts and contacts{% endblock %}
+{% block search_placeholder %}receptionists{% endblock %}
+
+{% block table_headers %}
+    <th style="width: 50px;">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="selectAll">
+        </div>
+    </th>
+    <th>ID</th>
+    <th>Username</th>
+    <th>Contact</th>
+    <th style="width: 140px;">Actions</th>
 {% endblock %}
+
+{% block table_body %}
+    {% for receptionist in receptionists %}
+        <tr data-status="active">
+            <td>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ receptionist.id }}">
+                </div>
+            </td>
+            <td>{{ receptionist.id }}</td>
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-user-tie text-secondary"></i>
+                    <span>{{ receptionist.user.username }}</span>
+                </div>
+            </td>
+            <td>{{ receptionist.contact|default:'-' }}</td>
+            <td>
+                <a href="{% url 'receptionists:edit_receptionist' receptionist.id %}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form action="{% url 'receptionists:delete_receptionist' receptionist.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger ms-1" data-confirm-delete="Delete this receptionist?">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="6" class="text-center py-5">
+                <div class="d-flex flex-column align-items-center">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h6 class="text-muted">No receptionists found</h6>
+                    <a href="{% url 'receptionists:add_receptionist' %}" class="btn btn-admin-primary mt-2">
+                        <i class="fas fa-plus me-1"></i>Add Receptionist
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+

@@ -1,11 +1,16 @@
-<!-- receptionists/templates/receptionists/add_receptionist.html -->
-{% extends 'base.html' %}
+{% extends 'admin_form_base.html' %}
 {% load static %}
-{% block content %}
-<h2>Add Receptionist</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Receptionist</button>
-</form>
+
+{% block title %}Add Receptionist - Hospital Management System{% endblock %}
+{% block page_title %}Add Receptionist{% endblock %}
+{% block current_page %}Add Receptionist{% endblock %}
+
+{% block back_url %}{% url 'receptionists:receptionist_list' %}{% endblock %}
+{% block form_title %}Add New Receptionist{% endblock %}
+{% block form_subtitle %}Create a new staff account for reception{% endblock %}
+{% block form_icon %}fas fa-user-tie{% endblock %}
+{% block submit_text %}Save Receptionist{% endblock %}
+
+{% block form_fields %}
+ {{ block.super }}
 {% endblock %}

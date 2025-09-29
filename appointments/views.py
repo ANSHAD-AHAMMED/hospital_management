@@ -6,7 +6,7 @@ from .models import Appointment
 from .forms import AppointmentForm, AppointmentRequestForm
 from patients.models import Patient
 from doctors.models import Doctor
-
+from accounts.models import CustomUser
 
 
 @login_required
@@ -122,7 +122,22 @@ def request_appointment(request):
     else:
         form = AppointmentRequestForm()
 
-    return render(request, 'appointments/request_appointment.html', {'form': form})
+    # Get all doctors
+    doctors = CustomUser.objects.filter(role='doctor').select_related('doctor_profile')
+
+    # Get distinct specializations from DoctorProfile
+    specializations = (
+        doctors
+        .exclude(doctor_profile__isnull=True)
+        .values_list('doctor_profile__specialization', flat=True)
+        .distinct()
+    )
+
+    return render(request, 'appointments/request_appointment.html', {
+        'form': form,
+        'doctors': doctors,
+        'specializations': specializations,
+    })
 
 
 @login_required

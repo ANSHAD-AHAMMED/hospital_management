@@ -1,15 +1,16 @@
-
-{% extends 'base.html' %}
+{% extends 'admin_form_base.html' %}
 {% load static %}
-{% block content %}
-<h2>Edit Doctor</h2>
 
-<div class="card shadow-sm p-3">
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Update Doctor</button>
-        <a href="{% url 'doctors:doctor_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+{% block title %}Edit Doctor - Hospital Management System{% endblock %}
+{% block page_title %}Edit Doctor{% endblock %}
+{% block current_page %}Edit Doctor{% endblock %}
+
+{% block back_url %}{% url 'doctors:doctor_list' %}{% endblock %}
+{% block form_title %}Edit Doctor{% endblock %}
+{% block form_subtitle %}Update doctor profile details{% endblock %}
+{% block form_icon %}fas fa-user-md{% endblock %}
+{% block submit_text %}Update Doctor{% endblock %}
+
+{% block form_fields %}
+ {{ block.super }}
 {% endblock %}

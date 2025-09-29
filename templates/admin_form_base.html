@@ -1,0 +1,426 @@
+{% extends 'admin_base.html' %}
+
+{% block header_actions %}
+    <a href="{% block back_url %}#{% endblock %}" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to List
+    </a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Form Header -->
+        <div class="stat-card mb-4">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                        <i class="{% block form_icon %}fas fa-plus{% endblock %} fa-2x text-primary"></i>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mb-1">{% block form_title %}Add New Item{% endblock %}</h4>
+                    <p class="text-muted mb-0">{% block form_subtitle %}Fill in the information below{% endblock %}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <div class="stat-card">
+            <form method="post" enctype="multipart/form-data" id="mainForm" novalidate>
+                {% csrf_token %}
+                
+                <!-- Form Errors -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger-modern mb-4">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Form Fields -->
+                {% block form_fields %}
+                <div class="row g-3">
+                    {% for field in form %}
+                        {% if field.field.widget.input_type != 'hidden' %}
+                            <div class="{% if field.name in wide_fields|default:'description,notes,address' %}col-12{% else %}col-md-6{% endif %}">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span class="text-danger">*</span>
+                                    {% endif %}
+                                </label>
+                                
+                                {% if field.field.widget.input_type == 'textarea' %}
+                                    <textarea 
+                                        name="{{ field.name }}" 
+                                        id="{{ field.id_for_label }}"
+                                        class="form-control{% if field.errors %} is-invalid{% endif %}"
+                                        rows="4"
+                                        {% if field.field.required %}required{% endif %}
+                                        {% if field.help_text %}aria-describedby="{{ field.id_for_label }}_help"{% endif %}
+                                        placeholder="{{ field.label }}"
+                                    >{{ field.value|default:'' }}</textarea>
+                                {% elif field.field.widget.input_type == 'select' %}
+                                    <select 
+                                        name="{{ field.name }}" 
+                                        id="{{ field.id_for_label }}"
+                                        class="form-select{% if field.errors %} is-invalid{% endif %}"
+                                        {% if field.field.required %}required{% endif %}
+                                        {% if field.help_text %}aria-describedby="{{ field.id_for_label }}_help"{% endif %}
+                                    >
+                                        {% for choice in field.field.choices %}
+                                            <option value="{{ choice.0 }}" {% if choice.0 == field.value %}selected{% endif %}>
+                                                {{ choice.1 }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                {% elif field.field.widget.input_type == 'checkbox' %}
+                                    <div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            name="{{ field.name }}" 
+                                            id="{{ field.id_for_label }}"
+                                            class="form-check-input{% if field.errors %} is-invalid{% endif %}"
+                                            {% if field.value %}checked{% endif %}
+                                            {% if field.help_text %}aria-describedby="{{ field.id_for_label }}_help"{% endif %}
+                                        >
+                                        <label class="form-check-label" for="{{ field.id_for_label }}">
+                                            {{ field.label }}
+                                        </label>
+                                    </div>
+                                {% elif field.field.widget.input_type == 'file' %}
+                                    <input 
+                                        type="file" 
+                                        name="{{ field.name }}" 
+                                        id="{{ field.id_for_label }}"
+                                        class="form-control{% if field.errors %} is-invalid{% endif %}"
+                                        {% if field.field.required %}required{% endif %}
+                                        {% if field.help_text %}aria-describedby="{{ field.id_for_label }}_help"{% endif %}
+                                        accept="{% block file_accept %}{% endblock %}"
+                                    >
+                                {% else %}
+                                    <input 
+                                        type="{{ field.field.widget.input_type|default:'text' }}" 
+                                        name="{{ field.name }}" 
+                                        id="{{ field.id_for_label }}"
+                                        class="form-control{% if field.errors %} is-invalid{% endif %}"
+                                        value="{{ field.value|default:'' }}"
+                                        {% if field.field.required %}required{% endif %}
+                                        {% if field.help_text %}aria-describedby="{{ field.id_for_label }}_help"{% endif %}
+                                        placeholder="{{ field.label }}"
+                                        {% if field.field.widget.input_type == 'email' %}autocomplete="email"{% endif %}
+                                        {% if field.field.widget.input_type == 'tel' %}autocomplete="tel"{% endif %}
+                                    >
+                                {% endif %}
+                                
+                                {% if field.help_text %}
+                                    <div id="{{ field.id_for_label }}_help" class="form-text">
+                                        {{ field.help_text }}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if field.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endblock %}
+
+                <!-- Custom Fields -->
+                {% block custom_fields %}{% endblock %}
+
+                <!-- Form Actions -->
+                <div class="d-flex justify-content-end gap-3 mt-4 pt-4 border-top">
+                    <a href="{{ back_url|default:'#' }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </a>
+                    <button type="button" class="btn btn-outline-primary" id="previewBtn" data-bs-toggle="modal" data-bs-target="#previewModal">
+                        <i class="fas fa-eye me-1"></i>Preview
+                    </button>
+                    <button type="submit" class="btn btn-admin-primary" id="submitBtn">
+                        <i class="fas fa-save me-1"></i>
+                        <span class="submit-text">{% block submit_text %}Save{% endblock %}</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status">
+                            <span class="visually-hidden">Saving...</span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="previewContent">
+                <!-- Preview content will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-admin-primary" onclick="document.getElementById('mainForm').submit();">
+                    <i class="fas fa-save me-1"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Unsaved Changes Modal -->
+<div class="modal fade" id="unsavedChangesModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Unsaved Changes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                    </div>
+                    <div>
+                        <p class="mb-1">You have unsaved changes!</p>
+                        <small class="text-muted">Are you sure you want to leave without saving?</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stay</button>
+                <button type="button" class="btn btn-danger" id="confirmLeaveBtn">Leave</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.is-valid {
+    border-color: #198754 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+.required-field {
+    position: relative;
+}
+
+.required-field::after {
+    content: '*';
+    color: #dc3545;
+    margin-left: 4px;
+}
+
+.form-floating {
+    position: relative;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    opacity: .65;
+    transform: scale(.85) translateY(-.5rem) translateX(.15rem);
+}
+
+/* File input styling */
+.form-control[type="file"] {
+    padding: 0.375rem 0.75rem;
+}
+
+/* Custom checkbox and radio styling */
+.form-check-input:checked {
+    background-color: var(--admin-primary);
+    border-color: var(--admin-primary);
+}
+
+.form-check-input:focus {
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let formChanged = false;
+let originalFormData = new FormData(document.getElementById('mainForm'));
+let leaveUrl = '';
+
+// Track form changes
+document.getElementById('mainForm').addEventListener('input', function() {
+    formChanged = true;
+    validateForm();
+});
+
+document.getElementById('mainForm').addEventListener('change', function() {
+    formChanged = true;
+    validateForm();
+});
+
+// Form validation
+function validateForm() {
+    const form = document.getElementById('mainForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const requiredFields = form.querySelectorAll('[required]');
+    let isValid = true;
+
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            isValid = false;
+            field.classList.add('is-invalid');
+        } else {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        }
+    });
+
+    submitBtn.disabled = !isValid;
+}
+
+// Form submission
+document.getElementById('mainForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    const text = submitBtn.querySelector('.submit-text');
+    
+    // Show loading state
+    spinner.classList.remove('d-none');
+    text.textContent = 'Saving...';
+    submitBtn.disabled = true;
+    
+    formChanged = false; // Reset change tracking
+});
+
+// Preview functionality
+document.getElementById('previewBtn').addEventListener('click', function() {
+    const formData = new FormData(document.getElementById('mainForm'));
+    const previewContent = document.getElementById('previewContent');
+    
+    let html = '<div class="row g-3">';
+    
+    for (let [name, value] of formData.entries()) {
+        if (name !== 'csrfmiddlewaretoken' && value) {
+            const label = document.querySelector(`label[for*="${name}"]`)?.textContent || name;
+            html += `
+                <div class="col-md-6">
+                    <div class="border rounded p-3">
+                        <strong class="text-muted small d-block">${label}</strong>
+                        <div class="mt-1">${value}</div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    html += '</div>';
+    previewContent.innerHTML = html;
+});
+
+// Warn about unsaved changes
+window.addEventListener('beforeunload', function(e) {
+    if (formChanged) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// Handle navigation with unsaved changes
+document.addEventListener('click', function(e) {
+    if (formChanged && e.target.matches('a[href]:not([href^="#"])')) {
+        e.preventDefault();
+        leaveUrl = e.target.href;
+        new bootstrap.Modal(document.getElementById('unsavedChangesModal')).show();
+    }
+});
+
+document.getElementById('confirmLeaveBtn').addEventListener('click', function() {
+    formChanged = false;
+    window.location.href = leaveUrl;
+});
+
+// Auto-save draft (optional)
+// setInterval(() => {
+//     if (formChanged) {
+//         saveDraft();
+//     }
+// }, 30000);
+
+function saveDraft() {
+    const formData = new FormData(document.getElementById('mainForm'));
+    localStorage.setItem('draft_' + window.location.pathname, JSON.stringify([...formData.entries()]));
+    console.log('Draft saved');
+}
+
+function loadDraft() {
+    const draft = localStorage.getItem('draft_' + window.location.pathname);
+    if (draft) {
+        const data = JSON.parse(draft);
+        const form = document.getElementById('mainForm');
+        
+        data.forEach(([name, value]) => {
+            const field = form.querySelector(`[name="${name}"]`);
+            if (field) {
+                field.value = value;
+                if (field.type === 'checkbox') {
+                    field.checked = value === 'on';
+                }
+            }
+        });
+    }
+}
+
+// Initial validation
+document.addEventListener('DOMContentLoaded', function() {
+    validateForm();
+    // loadDraft(); // Uncomment to enable draft loading
+});
+
+// Enhanced form validation
+function addCustomValidation() {
+    const emailFields = document.querySelectorAll('input[type="email"]');
+    emailFields.forEach(field => {
+        field.addEventListener('blur', function() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (this.value && !emailRegex.test(this.value)) {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+            }
+        });
+    });
+
+    const phoneFields = document.querySelectorAll('input[type="tel"]');
+    phoneFields.forEach(field => {
+        field.addEventListener('input', function() {
+            // Remove non-numeric characters except +, -, and spaces
+            this.value = this.value.replace(/[^\d+\-\s]/g, '');
+        });
+    });
+}
+
+// Initialize custom validation
+addCustomValidation();
+</script>
+{% endblock %}

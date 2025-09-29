@@ -1,0 +1,404 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Admin Dashboard - Hospital Management System{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block header_actions %}
+    <button class="btn btn-admin-primary btn-sm" data-bs-toggle="modal" data-bs-target="#quickActionsModal">
+        <i class="fas fa-plus me-1"></i>Quick Actions
+    </button>
+    <a href="{% url 'reports:reports_dashboard' %}" class="btn btn-outline-primary btn-sm">
+        <i class="fas fa-chart-line me-1"></i>Reports
+    </a>
+{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info-modern">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fas fa-user-shield fa-2x"></i>
+                </div>
+                <div>
+                    <h5 class="mb-1">Welcome back, Administrator!</h5>
+                    <p class="mb-0">You're managing the Hospital Management System as <strong>{{ user.username|title }}</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Overview -->
+<div class="row g-4 mb-5">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card text-center">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <div class="stat-number text-primary">{{ total_patients|default:0 }}</div>
+                    <div class="stat-label">Total Patients</div>
+                    <div class="stat-change">
+                        <span class="badge bg-success">+12% this month</span>
+                    </div>
+                </div>
+                <div class="stat-icon text-primary">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card text-center">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <div class="stat-number text-success">{{ total_doctors|default:0 }}</div>
+                    <div class="stat-label">Active Doctors</div>
+                    <div class="stat-change">
+                        <span class="badge bg-info">+2 this week</span>
+                    </div>
+                </div>
+                <div class="stat-icon text-success">
+                    <i class="fas fa-user-md"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card text-center">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <div class="stat-number text-warning">{{ total_appointments|default:0 }}</div>
+                    <div class="stat-label">Today's Appointments</div>
+                    <div class="stat-change">
+                        <span class="badge bg-warning">32 scheduled</span>
+                    </div>
+                </div>
+                <div class="stat-icon text-warning">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card text-center">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <div class="stat-number text-danger">{{ total_bills|default:0 }}</div>
+                    <div class="stat-label">Pending Bills</div>
+                    <div class="stat-change">
+                        <span class="badge bg-secondary">Last 7 days</span>
+                    </div>
+                </div>
+                <div class="stat-icon text-danger">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts and Analytics -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-8">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">Patient Registration Trends</h5>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-outline-primary active">7D</button>
+                    <button type="button" class="btn btn-outline-primary">30D</button>
+                    <button type="button" class="btn btn-outline-primary">90D</button>
+                </div>
+            </div>
+            <canvas id="patientTrendsChart" height="100"></canvas>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="stat-card">
+            <h5 class="mb-4">Department Distribution</h5>
+            <canvas id="departmentChart" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Management Grid -->
+<div class="row g-4 mb-5">
+    <!-- Patient Management -->
+    <div class="col-lg-4 col-md-6">
+        <div class="stat-card h-100">
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="fas fa-users fa-3x text-primary"></i>
+                </div>
+                <h5 class="mb-3">Patient Management</h5>
+                <p class="text-muted mb-4">Register new patients, update records, and manage patient information.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'patients:patient_list' %}" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>View All Patients
+                    </a>
+                    <a href="{% url 'patients:add_patient' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-plus me-2"></i>Add New Patient
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Doctor Management -->
+    <div class="col-lg-4 col-md-6">
+        <div class="stat-card h-100">
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-md fa-3x text-success"></i>
+                </div>
+                <h5 class="mb-3">Doctor Management</h5>
+                <p class="text-muted mb-4">Manage doctor profiles, schedules, and specializations.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'doctors:doctor_list' %}" class="btn btn-success">
+                        <i class="fas fa-list me-2"></i>View All Doctors
+                    </a>
+                    <a href="{% url 'doctors:add_doctor' %}" class="btn btn-outline-success">
+                        <i class="fas fa-plus me-2"></i>Add New Doctor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Appointment Management -->
+    <div class="col-lg-4 col-md-6">
+        <div class="stat-card h-100">
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="fas fa-calendar-check fa-3x text-warning"></i>
+                </div>
+                <h5 class="mb-3">Appointments</h5>
+                <p class="text-muted mb-4">Schedule appointments, manage bookings, and handle requests.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'appointments:appointment_list' %}" class="btn btn-warning">
+                        <i class="fas fa-calendar me-2"></i>View Appointments
+                    </a>
+                    <a href="{% url 'appointments:manage_requests' %}" class="btn btn-outline-warning">
+                        <i class="fas fa-clipboard-list me-2"></i>Manage Requests
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Billing Management -->
+    <div class="col-lg-4 col-md-6">
+        <div class="stat-card h-100">
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="fas fa-file-invoice-dollar fa-3x text-info"></i>
+                </div>
+                <h5 class="mb-3">Billing & Finance</h5>
+                <p class="text-muted mb-4">Generate bills, process payments, and manage financial records.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'billing:bill_list' %}" class="btn btn-info">
+                        <i class="fas fa-file-alt me-2"></i>View Bills
+                    </a>
+                    <a href="{% url 'billing:add_bill' %}" class="btn btn-outline-info">
+                        <i class="fas fa-plus me-2"></i>Create Bill
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Staff Management -->
+    <div class="col-lg-4 col-md-6">
+        <div class="stat-card h-100">
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-tie fa-3x text-secondary"></i>
+                </div>
+                <h5 class="mb-3">Staff Management</h5>
+                <p class="text-muted mb-4">Manage receptionists and administrative staff.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'receptionists:receptionist_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-users me-2"></i>View Staff
+                    </a>
+                    <a href="{% url 'receptionists:add_receptionist' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-plus me-2"></i>Add Staff Member
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Announcements -->
+    <div class="col-lg-4 col-md-6">
+        <div class="stat-card h-100">
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="fas fa-bullhorn fa-3x text-primary"></i>
+                </div>
+                <h5 class="mb-3">Announcements</h5>
+                <p class="text-muted mb-4">Create and manage hospital announcements and banners.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'patients:banner_list' %}" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>Manage Banners
+                    </a>
+                    <a href="{% url 'patients:patient_banner_add' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-plus me-2"></i>Add Banner
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-12">
+        <div class="stat-card">
+            <h5 class="mb-4"><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+            <div class="list-group list-group-flush">
+                <div class="list-group-item d-flex align-items-center py-3">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="rounded-circle bg-success bg-opacity-10 p-2">
+                            <i class="fas fa-user-plus text-success"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">New Patient Registered</h6>
+                        <p class="mb-1 text-muted">John Doe was registered by Dr. Smith</p>
+                        <small class="text-muted">2 minutes ago</small>
+                    </div>
+                </div>
+                
+                <div class="list-group-item d-flex align-items-center py-3">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                            <i class="fas fa-calendar-plus text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">Appointment Scheduled</h6>
+                        <p class="mb-1 text-muted">Appointment for Sarah Johnson on Dec 28, 2024</p>
+                        <small class="text-muted">5 minutes ago</small>
+                    </div>
+                </div>
+                
+                <div class="list-group-item d-flex align-items-center py-3">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="rounded-circle bg-warning bg-opacity-10 p-2">
+                            <i class="fas fa-file-invoice text-warning"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">Bill Generated</h6>
+                        <p class="mb-1 text-muted">Bill #1024 created for Patient ID 245</p>
+                        <small class="text-muted">10 minutes ago</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions Modal -->
+<div class="modal fade" id="quickActionsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-3">
+                    <a href="{% url 'patients:add_patient' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>Add New Patient
+                    </a>
+                    <a href="{% url 'doctors:add_doctor' %}" class="btn btn-outline-success">
+                        <i class="fas fa-user-md me-2"></i>Add New Doctor
+                    </a>
+                    <a href="{% url 'appointments:add_appointment' %}" class="btn btn-outline-warning">
+                        <i class="fas fa-calendar-plus me-2"></i>Schedule Appointment
+                    </a>
+                    <a href="{% url 'billing:add_bill' %}" class="btn btn-outline-info">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>Create Bill
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Patient Trends Chart
+const ctx1 = document.getElementById('patientTrendsChart').getContext('2d');
+new Chart(ctx1, {
+    type: 'line',
+    data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+            label: 'New Patients',
+            data: [12, 19, 15, 25, 22, 18, 24],
+            borderColor: 'rgb(37, 99, 235)',
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(0,0,0,0.1)'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+
+// Department Distribution Chart
+const ctx2 = document.getElementById('departmentChart').getContext('2d');
+new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        labels: ['Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'General'],
+        datasets: [{
+            data: [30, 25, 20, 15, 10],
+            backgroundColor: [
+                'rgb(37, 99, 235)',
+                'rgb(5, 150, 105)',
+                'rgb(217, 119, 6)',
+                'rgb(220, 38, 38)',
+                'rgb(100, 116, 139)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

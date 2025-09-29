@@ -1,15 +1,25 @@
-{% extends 'base.html' %}
+{% extends 'admin_form_base.html' %}
 {% load static %}
 
-{% block content %}
-<h2>Add Doctor</h2>
+{% block title %}Add Doctor - Hospital Management System{% endblock %}
+{% block page_title %}Add Doctor{% endblock %}
+{% block current_page %}Add Doctor{% endblock %}
 
-<div class="card shadow-sm p-3">
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Save Doctor</button>
-        <a href="{% url 'doctors:doctor_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+{% block back_url %}{% url 'doctors:doctor_list' %}{% endblock %}
+{% block form_title %}Add New Doctor{% endblock %}
+{% block form_subtitle %}Create a new doctor profile{% endblock %}
+{% block form_icon %}fas fa-user-md{% endblock %}
+{% block submit_text %}Save Doctor{% endblock %}
+
+{% block form_fields %}
+  {% for field in form %}
+    <div class="mb-3">
+      <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}
+        <div class="text-danger">{{ field.errors }}</div>
+      {% endif %}
+    </div>
+  {% endfor %}
 {% endblock %}
+

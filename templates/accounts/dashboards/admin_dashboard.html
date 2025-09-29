@@ -1,56 +1,254 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block title %}Admin Dashboard - Hospital Management System{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+
 {% block content %}
-<h2>Admin Dashboard</h2>
+<!-- Welcome Banner -->
+<div class="alert alert-info mb-4">
+    <h5>Welcome back, Administrator!</h5>
+    <p>You're logged in as <strong>{{ user.username|default:'Admin' }}</strong></p>
+</div>
 
-<!-- Show logged-in user details -->
-<div class="alert alert-info">
-    <strong>Logged in as:</strong>
-    {% if user.username %}
-    {{ user.username }}
-    {% elif user.email %}
-    {{ user.email }}
-    {% else %}
-    {{ user.get_full_name|default:user.id }}
+<!-- Statistics Cards -->
+<div class="row mb-5">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3>{{ total_patients|default:0 }}</h3>
+                <p>Total Patients</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body text-center">
+                <h3>{{ total_doctors|default:0 }}</h3>
+                <p>Active Doctors</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body text-center">
+                <h3>{{ total_appointments|default:0 }}</h3>
+                <p>Today's Appointments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body text-center">
+                <h3>{{ total_bills|default:0 }}</h3>
+                <p>Pending Bills</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Management Grid -->
+<div class="row g-4 mb-5">
+    <!-- Patient Management Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100" data-animate>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-users fa-3x text-primary"></i>
+                </div>
+                <h5 class="card-title">Patient Management</h5>
+                <p class="card-text text-muted">Register new patients, update records, and manage patient information.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'patients:patient_list' %}" class="btn btn-primary">
+                        <i class="fas fa-list me-1"></i>View All Patients
+                    </a>
+                    <a href="{% url 'patients:add_patient' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-plus me-1"></i>Add New Patient
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Management Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100" data-animate>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-md fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">Doctor Management</h5>
+                <p class="card-text text-muted">Manage doctor profiles, schedules, and specializations.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'doctors:doctor_list' %}" class="btn btn-success">
+                        <i class="fas fa-list me-1"></i>View All Doctors
+                    </a>
+                    <a href="{% url 'doctors:add_doctor' %}" class="btn btn-outline-success">
+                        <i class="fas fa-plus me-1"></i>Add New Doctor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointment Management Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100" data-animate>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-calendar-check fa-3x text-warning"></i>
+                </div>
+                <h5 class="card-title">Appointments</h5>
+                <p class="card-text text-muted">Schedule appointments, manage bookings, and handle requests.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'appointments:appointment_list' %}" class="btn btn-warning">
+                        <i class="fas fa-calendar me-1"></i>View Appointments
+                    </a>
+                    <a href="{% url 'appointments:manage_requests' %}" class="btn btn-outline-warning">
+                        <i class="fas fa-clipboard-list me-1"></i>Manage Requests
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Billing Management Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100" data-animate>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-file-invoice-dollar fa-3x text-info"></i>
+                </div>
+                <h5 class="card-title">Billing & Finance</h5>
+                <p class="card-text text-muted">Generate bills, process payments, and manage financial records.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'billing:bill_list' %}" class="btn btn-info">
+                        <i class="fas fa-file-alt me-1"></i>View Bills
+                    </a>
+                    <a href="{% url 'billing:add_bill' %}" class="btn btn-outline-info">
+                        <i class="fas fa-plus me-1"></i>Create Bill
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff Management Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100" data-animate>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-tie fa-3x text-secondary"></i>
+                </div>
+                <h5 class="card-title">Staff Management</h5>
+                <p class="card-text text-muted">Manage receptionists and administrative staff.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'receptionists:receptionist_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-users me-1"></i>View Staff
+                    </a>
+                    <a href="{% url 'receptionists:add_receptionist' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-plus me-1"></i>Add Staff Member
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner Management Card -->
+    {% if user.role == 'admin' or user.role == 'receptionist' %}
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100" data-animate>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-bullhorn fa-3x text-primary"></i>
+                </div>
+                <h5 class="card-title">Banner Management</h5>
+                <p class="card-text text-muted">Create and manage hospital announcements and banners.</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'patients:banner_list' %}" class="btn btn-primary">
+                        <i class="fas fa-list me-1"></i>Manage Banners
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     {% endif %}
-    ({{ user.role|title }})
 </div>
 
-{% if user.role == 'admin' or user.role == 'receptionist' %}
-<div class="row mt-3">
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'patients:banner_list' %}" class="btn btn-primary w-100">
-            Manage Banners
-        </a>
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-12">
+        <div class="card" data-animate>
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                <div class="recent-activity">
+                    <div class="activity-item">
+                        <div class="activity-icon success">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="fw-bold">New Patient Registered</div>
+                            <div class="text-muted small">John Doe was registered by Dr. Smith</div>
+                            <div class="text-muted small">2 minutes ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon primary">
+                            <i class="fas fa-calendar-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="fw-bold">Appointment Scheduled</div>
+                            <div class="text-muted small">Appointment for Sarah Johnson on Dec 28, 2024</div>
+                            <div class="text-muted small">5 minutes ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon warning">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="fw-bold">Bill Generated</div>
+                            <div class="text-muted small">Bill #1024 created for Patient ID 245</div>
+                            <div class="text-muted small">10 minutes ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-{% endif %}
 
-<div class="row mt-4">
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'patients:patient_list' %}" class="btn btn-info w-100">Manage Patients</a>
-    </div>
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'doctors:doctor_list' %}" class="btn btn-info w-100">Manage Doctors</a>
-    </div>
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'appointments:appointment_list' %}" class="btn btn-info w-100">Manage Appointments</a>
-    </div>
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'billing:bill_list' %}" class="btn btn-info w-100">Manage Billing</a>
+<!-- Quick Actions Modal -->
+<div class="modal fade" id="quickActionsModal" tabindex="-1" aria-labelledby="quickActionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickActionsModalLabel">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'patients:add_patient' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>Add New Patient
+                    </a>
+                    <a href="{% url 'doctors:add_doctor' %}" class="btn btn-outline-success">
+                        <i class="fas fa-user-md me-2"></i>Add New Doctor
+                    </a>
+                    <a href="{% url 'appointments:add_appointment' %}" class="btn btn-outline-warning">
+                        <i class="fas fa-calendar-plus me-2"></i>Schedule Appointment
+                    </a>
+                    <a href="{% url 'billing:add_bill' %}" class="btn btn-outline-info">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>Create Bill
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
-<div class="row mt-3">
-    <div class="col-md-3 mb-3">
-        <a href="{% url 'receptionists:receptionist_list' %}" class="btn btn-warning w-100">Manage Receptionists</a>
-    </div>
-    <div class="col-md-3">
-        <a href="{% url 'reports:reports_dashboard' %}" class="btn btn-success w-100">View Reports</a>
-    </div>
-    <div class="col-md-3">
-        <a href="{% url 'appointments:manage_requests' %}" class="btn btn-danger w-100">Manage Requests</a>
-    </div>
-</div>
-
 {% endblock %}

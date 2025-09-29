@@ -122,7 +122,7 @@ def admin_dashboard(request):
         'total_appointments': Appointment.objects.count(),
         'total_bills': Bill.objects.count(),
     }
-    return render(request, 'accounts/dashboards/admin_dashboard.html', context)
+    return render(request, 'accounts/dashboards/admin_dashboard_new.html', context)
 
 @login_required
 @user_passes_test(is_doctor)

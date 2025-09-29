@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+<p>Welcome, {{ user.username }}!</p>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h4>{{ total_patients|default:0 }}</h4>
+                <p>Patients</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h4>{{ total_doctors|default:0 }}</h4>
+                <p>Doctors</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h4>{{ total_appointments|default:0 }}</h4>
+                <p>Appointments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h4>{{ total_bills|default:0 }}</h4>
+                <p>Bills</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

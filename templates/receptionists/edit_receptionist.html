@@ -1,13 +1,16 @@
-{% extends 'base.html' %}
+{% extends 'admin_form_base.html' %}
 {% load static %}
 
-{% block content %}
-<h2>Edit Receptionist: {{ receptionist.name }}</h2>
+{% block title %}Edit Receptionist - Hospital Management System{% endblock %}
+{% block page_title %}Edit Receptionist{% endblock %}
+{% block current_page %}Edit Receptionist{% endblock %}
 
-<form method="POST" class="mt-3">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Update Receptionist</button>
-    <a href="{% url 'receptionists:receptionist_list' %}" class="btn btn-secondary">Cancel</a>
-</form>
+{% block back_url %}{% url 'receptionists:receptionist_list' %}{% endblock %}
+{% block form_title %}Edit Receptionist{% endblock %}
+{% block form_subtitle %}Update receptionist account details{% endblock %}
+{% block form_icon %}fas fa-user-tie{% endblock %}
+{% block submit_text %}Update Receptionist{% endblock %}
+
+{% block form_fields %}
+ {{ block.super }}
 {% endblock %}
