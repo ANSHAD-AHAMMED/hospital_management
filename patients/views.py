@@ -90,6 +90,7 @@ def is_admin_or_receptionist(user):
     return user.role in ['admin', 'receptionist']
 
 
+
 @login_required
 @user_passes_test(is_admin_or_receptionist)
 def patient_banner_add(request):
